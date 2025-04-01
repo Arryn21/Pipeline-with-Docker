@@ -16,7 +16,7 @@ pipeline {
         stage('Build with Java 17') {
             agent {
                 docker {
-                    image 'docker.image('maven:3.9.4-eclipse-temurin-17')'
+                    image maven:3.9.4-eclipse-temurin-17
                     args '--network ci_network'
                 }
             }
