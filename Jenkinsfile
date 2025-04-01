@@ -20,9 +20,14 @@ pipeline {
                     args '--network ci_network -v /root/.m2:/root/.m2'
                 }
             }
+            environment {
+                JAVA_HOME = '/opt/java/openjdk'
+                PATH = "${JAVA_HOME}/bin:${PATH}"
+            }
             steps {
-                sh 'java -version'
-                sh 'mvn -v'
+                sh 'echo "Using Java:" && java -version'
+                sh 'echo "Using Maven:" && mvn -v'
+                sh 'echo "JAVA_HOME is $JAVA_HOME"'
                 sh 'mvn clean compile'
             }
         }
