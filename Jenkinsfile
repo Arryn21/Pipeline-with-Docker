@@ -42,8 +42,7 @@ pipeline {
             steps {
                 sh 'java -version'
                 sh 'mvn -v'
-                // Skip compilation to avoid Java 17 compatibility error
-                sh 'mvn test -Dmaven.compiler.skip=true'
+                sh 'mvn test -Dmaven.compiler.skip=true -e -X'
             }
         }
 
