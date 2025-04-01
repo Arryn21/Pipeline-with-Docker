@@ -33,7 +33,7 @@ pipeline {
                 }
             }
             steps {
-                sh 'mvn test'
+                mvn test
             }
         }
 
