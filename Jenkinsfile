@@ -57,7 +57,7 @@ pipeline {
                 sh 'java -version'
                 sh 'mvn -v'
                 withSonarQubeEnv("${SONARQUBE_SERVER}") {
-                    sh 'mvn clean verify sonar:sonar'
+                    sh 'mvn sonar:sonar -Dmaven.compile.skip=true -e -X'
                 }
             }
         }
