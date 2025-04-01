@@ -21,6 +21,7 @@ pipeline {
                 }
             }
             steps {
+                checkout scm
                 sh 'mvn clean compile'
             }
         }
@@ -33,6 +34,7 @@ pipeline {
                 }
             }
             steps {
+                checkout scm
                 sh 'mvn test'
             }
         }
@@ -44,12 +46,10 @@ pipeline {
                     args '--network ci_network'
                 }
             }
-            tools {
-                maven 'M3'  // This assumes Maven is installed in Jenkins under that label
-            }
             steps {
+                checkout scm
                 withSonarQubeEnv('SonarQube') {
-                    sh 'mvn sonar:sonar'
+                    sh 'mvn clean verify sonar:sonar'
                 }
             }
         }
