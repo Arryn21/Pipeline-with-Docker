@@ -17,11 +17,12 @@ pipeline {
             agent {
                 docker {
                     image 'maven:3.9.4-eclipse-temurin-17'
-                    args '--network ci_network'
+                    args '--network ci_network -v /root/.m2:/root/.m2'
                 }
             }
             steps {
-                checkout scm
+                sh 'java -version'
+                sh 'mvn -v'
                 sh 'mvn clean compile'
             }
         }
@@ -30,11 +31,12 @@ pipeline {
             agent {
                 docker {
                     image 'maven:3.8.6-eclipse-temurin-11'
-                    args '--network ci_network'
+                    args '--network ci_network -v /root/.m2:/root/.m2'
                 }
             }
             steps {
-                checkout scm
+                sh 'java -version'
+                sh 'mvn -v'
                 sh 'mvn test'
             }
         }
@@ -43,12 +45,13 @@ pipeline {
             agent {
                 docker {
                     image 'maven:3.9.1-eclipse-temurin-8'
-                    args '--network ci_network'
+                    args '--network ci_network -v /root/.m2:/root/.m2'
                 }
             }
             steps {
-                checkout scm
-                withSonarQubeEnv('SonarQube') {
+                sh 'java -version'
+                sh 'mvn -v'
+                withSonarQubeEnv("${SONARQUBE_SERVER}") {
                     sh 'mvn clean verify sonar:sonar'
                 }
             }
@@ -63,8 +66,10 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
-                    sh 'docker push $DOCKER_IMAGE'
+                    sh '''
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        docker push $DOCKER_IMAGE
+                    '''
                 }
             }
         }
