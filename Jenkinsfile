@@ -28,19 +28,19 @@ pipeline {
         stage('Test with Java 11') {
             agent {
                 docker {
-                    image 'openjdk:11-jdk'
+                    image 'maven:3.8.6-eclipse-temurin-11'
                     args '--network ci_network'
                 }
             }
             steps {
-                mvn test
+                sh 'mvn test'
             }
         }
 
         stage('SonarQube Analysis with Java 8') {
             agent {
                 docker {
-                    image 'openjdk:8-jdk'
+                    image 'maven:3.9.1-eclipse-temurin-8'
                     args '--network ci_network'
                 }
             }
