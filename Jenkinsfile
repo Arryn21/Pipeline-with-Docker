@@ -46,10 +46,10 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis with Java 8') {
+        stage('SonarQube Analysis with Java 17') {
             agent {
                 docker {
-                    image 'maven:3.9.1-eclipse-temurin-8'
+                    image 'maven:3.9.4-eclipse-temurin-17'
                     args '--network ci_network -v /root/.m2:/root/.m2'
                 }
             }
@@ -57,7 +57,7 @@ pipeline {
                 sh 'java -version'
                 sh 'mvn -v'
                 withSonarQubeEnv("${SONARQUBE_SERVER}") {
-                    sh 'mvn sonar:sonar -Dmaven.compile.skip=true -e -X'
+                    sh 'mvn sonar:sonar -e -X'
                 }
             }
         }
