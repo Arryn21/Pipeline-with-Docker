@@ -25,10 +25,9 @@ pipeline {
                 PATH = "${JAVA_HOME}/bin:${PATH}"
             }
             steps {
-                sh 'echo "Using Java:" && java -version'
-                sh 'echo "Using Maven:" && mvn -v'
-                sh 'echo "JAVA_HOME is $JAVA_HOME"'
-                sh 'mvn clean compile'
+                sh 'java -version'
+                sh 'mvn -v'
+                sh 'mvn clean install -DskipTests -e -X'
             }
         }
 
@@ -42,7 +41,8 @@ pipeline {
             steps {
                 sh 'java -version'
                 sh 'mvn -v'
-                sh 'mvn test -Dmaven.compiler.skip=true -e -X'
+                // 🔥 Just run tests, no compiling at all
+                sh 'mvn surefire:test -e -X'
             }
         }
 
