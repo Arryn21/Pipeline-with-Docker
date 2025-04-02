@@ -23,9 +23,7 @@ pipeline {
             steps {
                 sh 'java -version'
                 sh 'mvn -v'
-                // Compile for Java 8 target to ensure compatibility
-                //sh 'mvn clean install -DskipTests -Dmaven.compiler.target=8 -Dmaven.compiler.source=8'
-                sh 'mvn clean package' //added new file to compile in java 17
+                sh 'mvn clean package'
                 stash name: 'built-artifacts', includes: 'target/**/*'
             }
         }
@@ -48,7 +46,7 @@ pipeline {
         stage('SonarQube Analysis Using Java 8') {
             agent {
                 docker {
-                    //image 'maven:3.9.4-eclipse-temurin-17'
+
                     image 'maven:3.8.6-jdk-8'
                     args '--network ci_network -v /root/.m2:/root/.m2'
                 }
@@ -66,7 +64,6 @@ pipeline {
                             -Dsonar.login=${SONAR_TOKEN} \
                             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
                         """
-                        // this command was replaced by line 65 -Dsonar.host.url=http://host.docker.internal:9000 \
                     }
                 }
             }
