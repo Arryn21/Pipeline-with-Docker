@@ -1,6 +1,20 @@
 # CI/CD Pipeline with Docker, Kubernetes, Jenkins, and SonarQube
 
-A step-by-step guide to setting up a complete CI/CD pipeline using Docker, Kubernetes, Jenkins, and SonarQube.
+A step-by-step guide to setting up a CI/CD pipeline for a Java application using Docker, Kubernetes, Jenkins, and SonarQube.
+
+---
+
+## 🎯 Assignment Objective
+
+This project follows a complete CI/CD workflow:
+
+1. **Checkout Code** → Pull the latest Java code from GitHub  
+2. **Build the Java Application** → Compile using **Java 17**  
+3. **Run Unit Tests** → Test using **Java 11**  
+4. **Analyze Code Quality** → Use **SonarQube** and **Java 8**  
+5. **Build Docker Image** → Package the Java application inside a Docker container  
+6. **Push to Docker Registry** → Store the image in **Docker Hub**  
+7. **Deploy to Kubernetes** → Deploy the containerized application using Kubernetes manifests
 
 ---
 
