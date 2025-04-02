@@ -46,25 +46,23 @@ pipeline {
 
         stage('SonarQube Analysis Using Java 8') {
             agent {
-                docker {
-                    image 'maven:3.8.6-openjdk-8'
-                    args '--network ci_network -v /root/.m2:/root/.m2'
-                }
+                docker { image 'maven:3.8.6-openjdk-8' }
             }
             steps {
-                unstash 'built-artifacts'
-                sh 'java -version'
-                sh 'mvn -v'
-                withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_TOKEN')]) {
-                    withSonarQubeEnv("${SONARQUBE_SERVER}") {
-                        sh """
-                            mvn org.codehaus.mojo:sonar-maven-plugin:3.7.0.1746:sonar \
-                            -Dsonar.projectKey=simple-java-app \
-                            -Dsonar.host.url=http://host.docker.internal:9000 \
-                            -Dsonar.login=${SONAR_TOKEN} \
-                            -DskipCompile
-                        """
-                    }
+                sh 'mvn clean install -DskipTests'
+            }
+        }
+
+        stage('Static Code Analysis (Java 17)') {
+            agent {
+                docker { image 'maven:3.9.4-eclipse-temurin-17' }
+            }
+            environment {
+                SONAR_TOKEN = credentials('sonarqube')
+            }
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh 'mvn sonar:sonar -DskipTests'
                 }
             }
         }
