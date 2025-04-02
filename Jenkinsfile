@@ -57,13 +57,13 @@ pipeline {
                 sh 'mvn -v'
                 withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_TOKEN')]) {
                     withSonarQubeEnv("${SONARQUBE_SERVER}") {
-                        sh '''
+                        sh """
                             mvn org.codehaus.mojo:sonar-maven-plugin:3.7.0.1746:sonar \
                             -Dsonar.projectKey=simple-java-app \
-                            -Dsonar.host.url=http://sonarqube:9000 \
-                            -Dsonar.login=$SONAR_TOKEN \
+                            -Dsonar.host.url=http://host.docker.internal:9000 \
+                            -Dsonar.login=${SONAR_TOKEN} \
                             -DskipCompile
-                        '''
+                        """
                     }
                 }
             }
