@@ -58,11 +58,11 @@ pipeline {
                 withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_TOKEN')]) {
                     withSonarQubeEnv("${SONARQUBE_SERVER}") {
                         sh """
-                            mvn org.codehaus.mojo:sonar-maven-plugin:3.7.0.1746:sonar \
+                            mvn clean verify sonar:sonar \
                             -Dsonar.projectKey=simple-java-app \
                             -Dsonar.host.url=http://host.docker.internal:9000 \
                             -Dsonar.login=${SONAR_TOKEN} \
-                            -DskipCompile
+                            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
                         """
                     }
                 }
