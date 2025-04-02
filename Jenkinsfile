@@ -55,7 +55,7 @@ pipeline {
                 unstash 'built-artifacts'
                 sh 'java -version'
                 sh 'mvn -v'
-                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_TOKEN')]) {
                     withSonarQubeEnv("${SONARQUBE_SERVER}") {
                         sh '''
                             mvn sonar:sonar \
