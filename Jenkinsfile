@@ -47,7 +47,7 @@ pipeline {
         stage('SonarQube Analysis with Java 8') {
             agent {
                 docker {
-                    image 'maven:3.8.6-eclipse-temurin-8'
+                    image 'maven:3.8.6-openjdk-8'
                     args '--network ci_network -v /root/.m2:/root/.m2'
                 }
             }
