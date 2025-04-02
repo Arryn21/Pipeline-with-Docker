@@ -44,7 +44,7 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis with Java 8') {
+        stage('SonarQube Analysis Using Java 8') {
             agent {
                 docker {
                     image 'maven:3.8.6-openjdk-8'
@@ -58,7 +58,7 @@ pipeline {
                 withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_TOKEN')]) {
                     withSonarQubeEnv("${SONARQUBE_SERVER}") {
                         sh '''
-                            mvn sonar:sonar \
+                            mvn org.codehaus.mojo:sonar-maven-plugin:3.7.0.1746:sonar \
                             -Dsonar.projectKey=simple-java-app \
                             -Dsonar.host.url=http://sonarqube:9000 \
                             -Dsonar.login=$SONAR_TOKEN \
