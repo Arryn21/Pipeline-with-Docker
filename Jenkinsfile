@@ -49,7 +49,7 @@ pipeline {
             agent {
                 docker {
                     //image 'maven:3.9.4-eclipse-temurin-17'
-                    image 'maven:3.9.4-eclipse-temurin-8'
+                    image 'maven:3.8.6-jdk-8'
                     args '--network ci_network -v /root/.m2:/root/.m2'
                 }
             }
