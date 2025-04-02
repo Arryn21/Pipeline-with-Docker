@@ -20,14 +20,12 @@ pipeline {
                     args '--network ci_network -v /root/.m2:/root/.m2'
                 }
             }
-            environment {
-                JAVA_HOME = '/opt/java/openjdk'
-                PATH = "${JAVA_HOME}/bin:${PATH}"
-            }
             steps {
                 sh 'java -version'
                 sh 'mvn -v'
-                sh 'mvn clean install -DskipTests -e -X'
+                // Compile for Java 8 target to ensure compatibility
+                sh 'mvn clean install -DskipTests -Dmaven.compiler.target=8 -Dmaven.compiler.source=8'
+                stash name: 'built-artifacts', includes: 'target/**/*'
             }
         }
 
@@ -39,25 +37,34 @@ pipeline {
                 }
             }
             steps {
+                unstash 'built-artifacts'
                 sh 'java -version'
                 sh 'mvn -v'
-                // 🔥 Just run tests, no compiling at all
-                sh 'mvn surefire:test -e -X'
+                sh 'mvn surefire:test -DskipCompile'
             }
         }
 
-        stage('SonarQube Analysis with Java 17') {
+        stage('SonarQube Analysis with Java 8') {
             agent {
                 docker {
-                    image 'maven:3.9.4-eclipse-temurin-17'
+                    image 'maven:3.8.6-eclipse-temurin-8'
                     args '--network ci_network -v /root/.m2:/root/.m2'
                 }
             }
             steps {
+                unstash 'built-artifacts'
                 sh 'java -version'
                 sh 'mvn -v'
-                withSonarQubeEnv("${SONARQUBE_SERVER}") {
-                    sh 'mvn sonar:sonar -e -X'
+                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                    withSonarQubeEnv("${SONARQUBE_SERVER}") {
+                        sh '''
+                            mvn sonar:sonar \
+                            -Dsonar.projectKey=simple-java-app \
+                            -Dsonar.host.url=http://sonarqube:9000 \
+                            -Dsonar.login=$SONAR_TOKEN \
+                            -DskipCompile
+                        '''
+                    }
                 }
             }
         }
